@@ -1,0 +1,7 @@
+const MESSAGE_ERROR_TAG = 'Unclosed root tag'
+const TEST_GLOBAL_AUTH_VALUE = 'TEST_GLOBAL_AUTHENTICITY_VALUE'
+
+module.exports = {
+  MESSAGE_ERROR_TAG,
+  TEST_GLOBAL_AUTH_VALUE
+}
