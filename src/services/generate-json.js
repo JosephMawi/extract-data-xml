@@ -7,6 +7,14 @@ const generateFile = async (data, date) => {
   })
 }
 
+const generateJsonFile = async (data) => {
+  fs.writeFile(`./src/data/results.json`, JSON.stringify(data), (err) => {
+    if (err) return console.log(err)
+    console.log(`Docuement created -> results.json`)
+  })
+} 
+
 module.exports = {
-  generateFile
+  generateFile,
+  generateJsonFile
 }
