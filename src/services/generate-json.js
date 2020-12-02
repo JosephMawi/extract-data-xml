@@ -1,9 +1,9 @@
 const fs = require('fs')
 
-const generateFile = async (data, date) => {
-  fs.writeFile(`./src/data-export/${date}.json`, JSON.stringify(data), (err) => {
-    if (err) return console.log(err)
-    console.log(`Docuement created -> ${date}.json`)
+const generateJsonDepuredFile = async (data, date, timestamp) => {
+  return fs.writeFile(`./src/data-export/${date}-${timestamp}.json`, JSON.stringify(data, null, "  "), (err) => {
+    if (err) return err
+    return `Docuement created -> ${date}.json`
   })
 }
 
@@ -12,9 +12,14 @@ const generateJsonFile = async (data) => {
     if (err) return console.log(err)
     console.log(`Docuement created -> results.json`)
   })
-} 
+}
+
+const generateXLSX = async (data) => {
+  fs.writeFileSync('./src/data-export/data.xlsx', data, 'binary');
+}
 
 module.exports = {
-  generateFile,
-  generateJsonFile
+  generateJsonDepuredFile,
+  generateJsonFile,
+  generateXLSX
 }

@@ -1,17 +1,30 @@
-const express = require("express")
+const express = require('express')
 const app = express()
-const data = require("./data/results.json")
+const { isXML, getXML, buildXML, getDataXML } = require('./services/xml')
+const { isReport, getReport } = require('./services/report')
+const CSVToJSON = require('csvtojson')
+const json2xls = require('json2xls')
 
-const { isXML, getXML, buildXML, getDataXML } = require("./services/xml")
+const { generateJsonDepuredFile, generateJsonFile, generateXLSX } = require('./services/generate-json')
 
-const { isReport, getReport } = require("./services/report")
+const { getFullYear } = require('./utils/date-format')
 
-const CSVToJSON = require("csvtojson")
+app.get('/convert-csv-to-json', (req, res) => {
+  CSVToJSON()
+    .fromFile('./src/data/logs.csv')
+    .then(async (data) => {
+      await generateJsonFile(data)
+      res.send("File generated")
+    })
+    .catch((err) => {
+      res.send(err.message)
+    })
+})
 
-const { generateFile, generateJsonFile } = require("./services/generate-json")
-
-app.get("/convert-xml", async (req, res) => {
+app.get('/depure-json-to-xlsx', async (req, res) => {
   try {
+    const data = require('./data/results.json')
+
     let allData = [];
     let obj = {};
 
@@ -38,26 +51,28 @@ app.get("/convert-xml", async (req, res) => {
           ...obj,
           ...dataResultReport
         }
-        allData.push(obj)
+
+        if (obj.TEST_GLOBAL_AUTHENTICITY_VALUE) {
+          allData.push(obj)
+        }
       }
     }
-    await generateFile(allData, allData[0].date)
-    res.send({ allData })
+    timestamp = data[data.length - 1].timestamp
+    await generateJsonDepuredFile(allData, await getFullYear(timestamp), timestamp)
+    await sleep(1000)
+
+    const json = require(`./data-export/${await getFullYear(timestamp)}-${timestamp}.json`)
+    let xls = json2xls(json)
+    await generateXLSX(xls)
+
+    res.send({ msg: 'Data generated', allData })
   } catch (err) {
     res.send(err.message)
   }
 })
 
-app.get("/convert-csv", async (req, res) => {
-  CSVToJSON()
-    .fromFile("./src/data/logs.csv")
-    .then((data) => {
-      generateJsonFile(data)
-      res.send("File generated")
-    })
-    .catch((err) => {
-      res.send(err.message)
-    })
-})
+const sleep = (milliseconds) => {
+  return new Promise(resolve => setTimeout(resolve, milliseconds))
+}
 
 module.exports = app
