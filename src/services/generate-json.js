@@ -14,8 +14,8 @@ const generateJsonFile = async (data) => {
   })
 }
 
-const generateXLSX = async (data) => {
-  fs.writeFileSync('./src/data-export/data.xlsx', data, 'binary');
+const generateXLSX = async (data, timestamp) => {
+  fs.writeFileSync(`./src/data-export/data-${timestamp}.xlsx`, data, 'binary');
 }
 
 module.exports = {

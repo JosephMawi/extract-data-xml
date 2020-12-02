@@ -1,4 +1,4 @@
-const { getFullHour, getFullYear } = require("../utils/date-format");
+const { getFullHour } = require("../utils/date-format");
 
 const whiteSpace = 1, removeMS = 4
 

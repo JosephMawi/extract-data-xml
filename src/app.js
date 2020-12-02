@@ -63,7 +63,7 @@ app.get('/depure-json-to-xlsx', async (req, res) => {
 
     const json = require(`./data-export/${await getFullYear(timestamp)}-${timestamp}.json`)
     let xls = json2xls(json)
-    await generateXLSX(xls)
+    await generateXLSX(xls, timestamp)
 
     res.send({ msg: 'Data generated', allData })
   } catch (err) {
