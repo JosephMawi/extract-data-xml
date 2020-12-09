@@ -88,6 +88,10 @@ const getResultValue = async data => {
 
 const getTestGlobalAuthValue = async data => {
   let fields = data['Fields'][0]['Field'], result = null
+  if (!data['Fields'][0]) {
+    return 'UNVALIDATED'
+  }
+
   for (const value of fields) {
     if (value['Code'][0] === TEST_GLOBAL_AUTH_VALUE) {
       result = value['Value'][0]

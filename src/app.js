@@ -9,9 +9,11 @@ const { generateJsonDepuredFile, generateJsonFile, generateXLSX } = require('./s
 
 const { getFullYear } = require('./utils/date-format')
 
-app.get('/convert-csv-to-json', (req, res) => {
+app.get('/convert-csv-to-json/:doc', (req, res) => {
+  let doc = req.params.doc
+
   CSVToJSON()
-    .fromFile('./src/data/logs.csv')
+    .fromFile(`./src/data/${doc}.csv`)
     .then(async (data) => {
       await generateJsonFile(data)
       res.send("File generated")
@@ -51,7 +53,6 @@ app.get('/depure-json-to-xlsx', async (req, res) => {
           ...obj,
           ...dataResultReport
         }
-
         if (obj.TEST_GLOBAL_AUTHENTICITY_VALUE) {
           allData.push(obj)
         }
